@@ -14,12 +14,10 @@
 <https://purl.org/pch> rdf:type owl:Ontology ;
                         dc:rights "Patient Clinical History Ontology" ,
                                   "This ontology is licensed under Apache 2.0" ;
-                        dct:creator [ rdf:type foaf:Person ;
-                                      foaf:name "Giacomo" ;
+                        dct:creator [ foaf:name "Giacomo" ;
                                       foaf:surname "Accursi"
                                     ] ,
-                                    [ rdf:type foaf:Person ;
-                                      foaf:name "Andrea" ;
+                                    [ foaf:name "Andrea" ;
                                       foaf:surname "Acampora"
                                     ] ;
                         dct:description "The ontology Patient Clincal History aim to model the patient clinical data domain and track medicines and procedures."@en ;
@@ -65,10 +63,189 @@ foaf:surname rdf:type owl:AnnotationProperty .
 
 
 #################################################################
+#    Object Properties
+#################################################################
+
+###  https://purl.org/pch#hasClinicalDocument
+:hasClinicalDocument rdf:type owl:ObjectProperty ;
+                     rdfs:subPropertyOf owl:topObjectProperty ;
+                     owl:inverseOf :refersToPatient ;
+                     rdfs:domain :Patient ;
+                     rdfs:range :ClinicalDocument .
+
+
+###  https://purl.org/pch#refersToPatient
+:refersToPatient rdf:type owl:ObjectProperty ,
+                          owl:FunctionalProperty ;
+                 rdfs:domain :ClinicalDocument ;
+                 rdfs:range :Patient .
+
+
+###  https://purl.org/pch#refersToSnomedConcept
+:refersToSnomedConcept rdf:type owl:ObjectProperty ,
+                                owl:FunctionalProperty ;
+                       rdfs:domain :MedicalEntity ;
+                       rdfs:range :SnomedConcept .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://xmlns.com/foaf/0.1/birthday
+foaf:birthday rdf:type owl:DatatypeProperty ;
+              rdfs:subPropertyOf owl:topDataProperty ;
+              rdf:type owl:FunctionalProperty ;
+              rdfs:domain foaf:Person .
+
+
+###  http://xmlns.com/foaf/0.1/familyName
+foaf:familyName rdf:type owl:DatatypeProperty ,
+                         owl:FunctionalProperty ;
+                rdfs:domain foaf:Person ;
+                rdfs:range xsd:string .
+
+
+###  http://xmlns.com/foaf/0.1/gender
+foaf:gender rdf:type owl:DatatypeProperty ,
+                     owl:FunctionalProperty ;
+            rdfs:domain foaf:Person ;
+            rdfs:range xsd:string .
+
+
+###  http://xmlns.com/foaf/0.1/givenName
+foaf:givenName rdf:type owl:DatatypeProperty ,
+                        owl:FunctionalProperty ;
+               rdfs:domain foaf:Person ;
+               rdfs:range xsd:string .
+
+
+###  https://purl.org/pch#hasAssumptionDuration
+:hasAssumptionDuration rdf:type owl:DatatypeProperty ;
+                       rdfs:domain :PrescriptionMedicinalDocument ;
+                       rdfs:range xsd:int .
+
+
+###  https://purl.org/pch#hasDoctorNotes
+:hasDoctorNotes rdf:type owl:DatatypeProperty ;
+                rdfs:domain :ClinicalDocument ;
+                rdfs:range xsd:string .
+
+
+###  https://purl.org/pch#hasDocumentId
+:hasDocumentId rdf:type owl:DatatypeProperty ;
+               rdfs:subPropertyOf owl:topDataProperty ;
+               rdf:type owl:FunctionalProperty ;
+               rdfs:domain :ClinicalDocument ;
+               rdfs:range xsd:string .
+
+
+###  https://purl.org/pch#hasEmissionDate
+:hasEmissionDate rdf:type owl:DatatypeProperty ,
+                          owl:FunctionalProperty ;
+                 rdfs:domain :ClinicalDocument ;
+                 rdfs:range xsd:dateTime .
+
+
+###  https://purl.org/pch#hasSnomedBrowserLink
+:hasSnomedBrowserLink rdf:type owl:DatatypeProperty ;
+                      rdfs:subPropertyOf owl:topDataProperty ;
+                      rdf:type owl:FunctionalProperty ;
+                      rdfs:domain :SnomedConcept ;
+                      rdfs:range xsd:anyURI .
+
+
+###  https://purl.org/pch#hasSnomedCode
+:hasSnomedCode rdf:type owl:DatatypeProperty ;
+               rdfs:subPropertyOf owl:topDataProperty ;
+               rdf:type owl:FunctionalProperty ;
+               rdfs:domain :SnomedConcept ;
+               rdfs:range xsd:string .
+
+
+###  https://purl.org/pch#taxCode
+:taxCode rdf:type owl:DatatypeProperty ,
+                  owl:FunctionalProperty ;
+         rdfs:domain :Patient ;
+         rdfs:range xsd:string .
+
+
+#################################################################
 #    Classes
 #################################################################
 
 ###  http://xmlns.com/foaf/0.1/Person
 foaf:Person rdf:type owl:Class .
+
+
+###  https://purl.org/pch#ClinicalDocument
+:ClinicalDocument rdf:type owl:Class .
+
+
+###  https://purl.org/pch#Disease
+:Disease rdf:type owl:Class ;
+         rdfs:subClassOf :MedicalEntity .
+
+
+###  https://purl.org/pch#DiseaseDiagnosisDocument
+:DiseaseDiagnosisDocument rdf:type owl:Class ;
+                          rdfs:subClassOf :ClinicalDocument .
+
+
+###  https://purl.org/pch#HealingDocument
+:HealingDocument rdf:type owl:Class ;
+                 rdfs:subClassOf :ClinicalDocument .
+
+
+###  https://purl.org/pch#MedicalEntity
+:MedicalEntity rdf:type owl:Class .
+
+
+###  https://purl.org/pch#Medicinal
+:Medicinal rdf:type owl:Class ;
+           rdfs:subClassOf :MedicalEntity .
+
+
+###  https://purl.org/pch#Patient
+:Patient rdf:type owl:Class ;
+         rdfs:subClassOf foaf:Person .
+
+
+###  https://purl.org/pch#PrescriptionMedicinalDocument
+:PrescriptionMedicinalDocument rdf:type owl:Class ;
+                               rdfs:subClassOf :ClinicalDocument .
+
+
+###  https://purl.org/pch#Procedure
+:Procedure rdf:type owl:Class ;
+           rdfs:subClassOf :MedicalEntity .
+
+
+###  https://purl.org/pch#ProcedureExecutionDocument
+:ProcedureExecutionDocument rdf:type owl:Class ;
+                            rdfs:subClassOf :ClinicalDocument .
+
+
+###  https://purl.org/pch#SnomedConcept
+:SnomedConcept rdf:type owl:Class .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  https://purl.org/pch#Fabio_Bianchi
+:Fabio_Bianchi rdf:type owl:NamedIndividual ,
+                        :Patient ;
+               foaf:gender "male" .
+
+
+###  https://purl.org/pch#Mario_Rossi
+:Mario_Rossi rdf:type owl:NamedIndividual ;
+             foaf:familyName "rossi" ;
+             foaf:gender "male" ;
+             foaf:givenName "mario" ;
+             :taxCode "ABCDEFGHI" .
+
 
 ###  Generated by the OWL API (version 4.5.26.2023-07-17T20:34:13Z) https://github.com/owlcs/owlapi
