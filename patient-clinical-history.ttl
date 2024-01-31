@@ -71,12 +71,12 @@ foaf:surname rdf:type owl:AnnotationProperty .
 <http://purl.obolibrary.org/obo/RO_0002410> rdfs:domain :Medicinal .
 
 
-###  https://purl.org/pch#refers_to_desease
-:refers_to_desease rdf:type owl:ObjectProperty ;
-                   rdfs:domain :DiseaseDiagnosisDocument ;
-                   rdfs:range :Disease ;
-                   rdfs:isDefinedBy : ;
-                   rdfs:label "refers to desease" .
+###  https://purl.org/pch#has_procedure
+:has_procedure rdf:type owl:ObjectProperty ;
+               rdfs:domain :ProcedureExecutionDocument ;
+               rdfs:range :Procedure ;
+               rdfs:isDefinedBy : ;
+               rdfs:label "has procedure" .
 
 
 ###  https://purl.org/pch/hasClinicalDocument
@@ -103,10 +103,10 @@ foaf:surname rdf:type owl:AnnotationProperty .
                           rdfs:domain :HealingDocument ,
                                       :PrescriptionMedicinalDocument ,
                                       :ProcedureExecutionDocument ;
-                          rdfs:range :DiseaseDiagnosisDocument ;
+                          rdfs:range :Disease ;
                           rdfs:comment "This property link patient documents to a disease diagnosis document." ;
                           rdfs:isDefinedBy : ;
-                          rdfs:label "refers to clinical document" .
+                          rdfs:label "refers to desease" .
 
 
 ###  https://purl.org/pch/refersToPatient
@@ -127,6 +127,14 @@ foaf:surname rdf:type owl:AnnotationProperty .
                        rdfs:comment "This property link a medical entity to its snomed concept." ;
                        rdfs:isDefinedBy : ;
                        rdfs:label "refers to snomed concept" .
+
+
+###  https://purl.org/pch/refers_to_desease
+:refers_to_desease rdf:type owl:ObjectProperty ;
+                   rdfs:domain :DiseaseDiagnosisDocument ;
+                   rdfs:range :Disease ;
+                   rdfs:isDefinedBy : ;
+                   rdfs:label "has desease" .
 
 
 ###  https://purl.org/pch/refers_to_medicinal
@@ -169,7 +177,13 @@ foaf:givenName rdf:type owl:DatatypeProperty ,
                rdfs:range xsd:string .
 
 
-###  https://purl.org/pch#desease_note
+###  https://purl.org/pch#procedure_duration
+:procedure_duration rdf:type owl:DatatypeProperty ;
+                    rdfs:isDefinedBy <https://purl.org/pch> ;
+                    rdfs:label "procedure duration" .
+
+
+###  https://purl.org/pch/desease_note
 :desease_note rdf:type owl:DatatypeProperty ;
               rdfs:isDefinedBy : ;
               rdfs:label "desease note" .
@@ -189,16 +203,6 @@ foaf:givenName rdf:type owl:DatatypeProperty ,
                 rdfs:range xsd:string ;
                 rdfs:isDefinedBy : ;
                 rdfs:label "has doctor notes" .
-
-
-###  https://purl.org/pch/hasDocumentId
-:hasDocumentId rdf:type owl:DatatypeProperty ;
-               rdfs:subPropertyOf owl:topDataProperty ;
-               rdf:type owl:FunctionalProperty ;
-               rdfs:domain :ClinicalDocument ;
-               rdfs:range xsd:string ;
-               rdfs:isDefinedBy : ;
-               rdfs:label "has document id" .
 
 
 ###  https://purl.org/pch/hasEmissionDate
@@ -325,7 +329,7 @@ foaf:Person rdf:type owl:Class .
 :ProcedureExecutionDocument rdf:type owl:Class ;
                             rdfs:subClassOf :ClinicalDocument ;
                             rdfs:isDefinedBy : ;
-                            rdfs:label "Procedure Examination Document" .
+                            rdfs:label "Procedure Document" .
 
 
 ###  https://purl.org/pch/SnomedConcept
@@ -338,18 +342,95 @@ foaf:Person rdf:type owl:Class .
 #    Individuals
 #################################################################
 
-###  https://purl.org/pch/Fabio_Bianchi
-:Fabio_Bianchi rdf:type owl:NamedIndividual ,
-                        :Patient ;
-               foaf:gender "male" .
+###  https://purl.org/pch#Acetylcysteine
+:Acetylcysteine rdf:type owl:NamedIndividual ,
+                         <http://purl.obolibrary.org/obo/CHEBI_22198> .
+
+
+###  https://purl.org/pch#Lung_Lobectomy
+:Lung_Lobectomy rdf:type owl:NamedIndividual ,
+                         :SnomedConcept ;
+                :hasSnomedBrowserLink "https://browser.ihtsdotools.org/?perspective=full&conceptId1=173171007&edition=MAIN&release=&languages=en"^^xsd:anyURI ;
+                :hasSnomedCode "173171007" .
+
+
+###  https://purl.org/pch#Rossi_Acetylcysteine_Prescription
+:Rossi_Acetylcysteine_Prescription rdf:type owl:NamedIndividual ,
+                                            :Medicinal ;
+                                   :refers_to_medicinal :Acetylcysteine ;
+                                   :hasAssumptionDuration 30 ;
+                                   :has_daily_quantity 5 .
+
+
+###  https://purl.org/pch#Rossi_Diagnosis_Document
+:Rossi_Diagnosis_Document rdf:type owl:NamedIndividual ,
+                                   :DiseaseDiagnosisDocument ;
+                          :refersToPatient :Mario_Rossi ;
+                          :refers_to_desease :Rossi_Viral_Pneumonia ;
+                          :hasDoctorNotes "Mario Rossi has a serious viral pneumonia in the right lung." ;
+                          :hasEmissionDate "2024-01-31T00:00:00"^^xsd:dateTime .
+
+
+###  https://purl.org/pch#Rossi_Healing_Document
+:Rossi_Healing_Document rdf:type owl:NamedIndividual ,
+                                 :HealingDocument ;
+                        :refersToClinicalDocument :Rossi_Viral_Pneumonia ;
+                        :refersToPatient :Mario_Rossi ;
+                        :hasDoctorNotes "Mario Rossi is in good conditions and he no long has viral pneumonia." ;
+                        :hasEmissionDate "2024-01-31T00:00:00"^^xsd:dateTime .
+
+
+###  https://purl.org/pch#Rossi_Lobectomy_Procedure
+:Rossi_Lobectomy_Procedure rdf:type owl:NamedIndividual ,
+                                    :Procedure ;
+                           :refersToSnomedConcept :Lung_Lobectomy ;
+                           :procedure_duration 120 .
+
+
+###  https://purl.org/pch#Rossi_Lobectomy_Procedure_Document
+:Rossi_Lobectomy_Procedure_Document rdf:type owl:NamedIndividual ,
+                                             :ProcedureExecutionDocument ;
+                                    :has_procedure :Rossi_Lobectomy_Procedure ;
+                                    :refersToClinicalDocument :Rossi_Viral_Pneumonia ;
+                                    :refersToPatient :Mario_Rossi ;
+                                    :hasDoctorNotes "The lobectomy had a positive outcome. The right lung is no more affected by viral pneumonia." ;
+                                    :hasEmissionDate "2024-01-31T00:00:00"^^xsd:dateTime .
+
+
+###  https://purl.org/pch#Rossi_Pneumonia_Prescription_Document
+:Rossi_Pneumonia_Prescription_Document rdf:type owl:NamedIndividual ,
+                                                :PrescriptionMedicinalDocument ;
+                                       :has_prescription :Rossi_Acetylcysteine_Prescription ;
+                                       :refersToClinicalDocument :Rossi_Viral_Pneumonia ;
+                                       :refersToPatient :Mario_Rossi ;
+                                       :hasDoctorNotes "Mario Rossi should take Acetylcysteine for his viral pneumonia." ;
+                                       :hasEmissionDate "2024-01-31T00:00:00"^^xsd:dateTime .
+
+
+###  https://purl.org/pch#Rossi_Viral_Pneumonia
+:Rossi_Viral_Pneumonia rdf:type owl:NamedIndividual ,
+                                :Disease ;
+                       :refersToSnomedConcept :Viral_Pneumonia .
+
+
+###  https://purl.org/pch#Viral_Pneumonia
+:Viral_Pneumonia rdf:type owl:NamedIndividual ,
+                          :SnomedConcept ;
+                 :hasSnomedBrowserLink "https://browser.ihtsdotools.org/?perspective=full&conceptId1=75570004&edition=MAIN&release=&languages=en"^^xsd:anyURI ;
+                 :hasSnomedCode 75570004 .
 
 
 ###  https://purl.org/pch/Mario_Rossi
-:Mario_Rossi rdf:type owl:NamedIndividual ;
-             foaf:familyName "rossi" ;
-             foaf:gender "male" ;
-             foaf:givenName "mario" ;
-             :taxCode "ABCDEFGHI" .
+:Mario_Rossi rdf:type owl:NamedIndividual ,
+                      :Patient ;
+             :hasClinicalDocument :Rossi_Diagnosis_Document ,
+                                  :Rossi_Healing_Document ,
+                                  :Rossi_Lobectomy_Procedure_Document ,
+                                  :Rossi_Pneumonia_Prescription_Document ;
+             foaf:familyName "Rossi" ;
+             foaf:gender "Male" ;
+             foaf:givenName "Mario" ;
+             :taxCode "RSSMR90H294N" .
 
 
 #################################################################
