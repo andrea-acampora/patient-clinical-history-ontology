@@ -1,0 +1,12 @@
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX pch: <https://purl.org/pch/>
+
+SELECT ?patient ?givenName ?familyName ?birthday ?gender ?taxCode
+WHERE {
+  ?patient rdf:type pch:Patient .
+  ?patient foaf:givenName ?givenName .
+  ?patient foaf:familyName ?familyName .
+  ?patient pch:taxCode ?taxCode.
+  OPTIONAL { ?patient foaf:birthday ?birthday . }
+  OPTIONAL { ?patient foaf:gender ?gender . }
+}

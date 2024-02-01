@@ -12,7 +12,6 @@
 @base <https://purl.org/pch/> .
 
 <https://purl.org/pch> rdf:type owl:Ontology ;
-                        owl:imports <http://purl.obolibrary.org/obo/dron/releases/2023-08-17/dron.owl> ;
                         dc:rights "Patient Clinical History Ontology" ,
                                   "This ontology is licensed under Apache 2.0" ;
                         dct:creator [ foaf:name "Andrea" ;
@@ -30,6 +29,11 @@
 #################################################################
 #    Annotation properties
 #################################################################
+
+###  http://purl.obolibrary.org/obo/RO_0002410
+<http://purl.obolibrary.org/obo/RO_0002410> rdf:type owl:AnnotationProperty ;
+                                            rdfs:domain :Medicinal .
+
 
 ###  http://purl.org/dc/elements/1.1/rights
 dc:rights rdf:type owl:AnnotationProperty .
@@ -67,18 +71,6 @@ foaf:surname rdf:type owl:AnnotationProperty .
 #    Object Properties
 #################################################################
 
-###  http://purl.obolibrary.org/obo/RO_0002410
-<http://purl.obolibrary.org/obo/RO_0002410> rdfs:domain :Medicinal .
-
-
-###  https://purl.org/pch#has_procedure
-:has_procedure rdf:type owl:ObjectProperty ;
-               rdfs:domain :ProcedureExecutionDocument ;
-               rdfs:range :Procedure ;
-               rdfs:isDefinedBy : ;
-               rdfs:label "has procedure" .
-
-
 ###  https://purl.org/pch/hasClinicalDocument
 :hasClinicalDocument rdf:type owl:ObjectProperty ;
                      rdfs:subPropertyOf owl:topObjectProperty ;
@@ -90,6 +82,14 @@ foaf:surname rdf:type owl:AnnotationProperty .
                      rdfs:label "has clinical document" .
 
 
+###  https://purl.org/pch/has_disease
+:has_disease rdf:type owl:ObjectProperty ;
+             rdfs:domain :DiseaseDiagnosisDocument ;
+             rdfs:range :Disease ;
+             rdfs:isDefinedBy : ;
+             rdfs:label "has disease" .
+
+
 ###  https://purl.org/pch/has_prescription
 :has_prescription rdf:type owl:ObjectProperty ;
                   rdfs:domain :PrescriptionMedicinalDocument ;
@@ -98,15 +98,12 @@ foaf:surname rdf:type owl:AnnotationProperty .
                   rdfs:label "has prescription" .
 
 
-###  https://purl.org/pch/refersToClinicalDocument
-:refersToClinicalDocument rdf:type owl:ObjectProperty ;
-                          rdfs:domain :HealingDocument ,
-                                      :PrescriptionMedicinalDocument ,
-                                      :ProcedureExecutionDocument ;
-                          rdfs:range :Disease ;
-                          rdfs:comment "This property link patient documents to a disease diagnosis document." ;
-                          rdfs:isDefinedBy : ;
-                          rdfs:label "refers to desease" .
+###  https://purl.org/pch/has_procedure
+:has_procedure rdf:type owl:ObjectProperty ;
+               rdfs:domain :ProcedureExecutionDocument ;
+               rdfs:range :Procedure ;
+               rdfs:isDefinedBy : ;
+               rdfs:label "has procedure" .
 
 
 ###  https://purl.org/pch/refersToPatient
@@ -129,12 +126,17 @@ foaf:surname rdf:type owl:AnnotationProperty .
                        rdfs:label "refers to snomed concept" .
 
 
-###  https://purl.org/pch/refers_to_desease
-:refers_to_desease rdf:type owl:ObjectProperty ;
-                   rdfs:domain :DiseaseDiagnosisDocument ;
+###  https://purl.org/pch/refers_to_disease
+:refers_to_disease rdf:type owl:ObjectProperty ;
+                   rdfs:domain [ rdf:type owl:Class ;
+                                 owl:unionOf ( :HealingDocument
+                                               :PrescriptionMedicinalDocument
+                                               :ProcedureExecutionDocument
+                                             )
+                               ] ;
                    rdfs:range :Disease ;
                    rdfs:isDefinedBy : ;
-                   rdfs:label "has desease" .
+                   rdfs:label "refers to disease" .
 
 
 ###  https://purl.org/pch/refers_to_medicinal
@@ -175,12 +177,6 @@ foaf:givenName rdf:type owl:DatatypeProperty ,
                         owl:FunctionalProperty ;
                rdfs:domain foaf:Person ;
                rdfs:range xsd:string .
-
-
-###  https://purl.org/pch#procedure_duration
-:procedure_duration rdf:type owl:DatatypeProperty ;
-                    rdfs:isDefinedBy <https://purl.org/pch> ;
-                    rdfs:label "procedure duration" .
 
 
 ###  https://purl.org/pch/desease_note
@@ -243,6 +239,12 @@ foaf:givenName rdf:type owl:DatatypeProperty ,
                     rdfs:label "has daily quantity" .
 
 
+###  https://purl.org/pch/procedure_duration
+:procedure_duration rdf:type owl:DatatypeProperty ;
+                    rdfs:isDefinedBy <https://purl.org/pch> ;
+                    rdfs:label "procedure duration" .
+
+
 ###  https://purl.org/pch/taxCode
 :taxCode rdf:type owl:DatatypeProperty ,
                   owl:FunctionalProperty ;
@@ -255,6 +257,14 @@ foaf:givenName rdf:type owl:DatatypeProperty ,
 #################################################################
 #    Classes
 #################################################################
+
+###  http://purl.obolibrary.org/obo/BFO_0000001
+<http://purl.obolibrary.org/obo/BFO_0000001> rdf:type owl:Class .
+
+
+###  http://purl.obolibrary.org/obo/CHEBI_22198
+<http://purl.obolibrary.org/obo/CHEBI_22198> rdf:type owl:Class .
+
 
 ###  http://xmlns.com/foaf/0.1/Person
 foaf:Person rdf:type owl:Class .
@@ -342,82 +352,16 @@ foaf:Person rdf:type owl:Class .
 #    Individuals
 #################################################################
 
-###  https://purl.org/pch#Acetylcysteine
+###  https://purl.org/pch/Acetylcysteine
 :Acetylcysteine rdf:type owl:NamedIndividual ,
                          <http://purl.obolibrary.org/obo/CHEBI_22198> .
 
 
-###  https://purl.org/pch#Lung_Lobectomy
+###  https://purl.org/pch/Lung_Lobectomy
 :Lung_Lobectomy rdf:type owl:NamedIndividual ,
                          :SnomedConcept ;
                 :hasSnomedBrowserLink "https://browser.ihtsdotools.org/?perspective=full&conceptId1=173171007&edition=MAIN&release=&languages=en"^^xsd:anyURI ;
                 :hasSnomedCode "173171007" .
-
-
-###  https://purl.org/pch#Rossi_Acetylcysteine_Prescription
-:Rossi_Acetylcysteine_Prescription rdf:type owl:NamedIndividual ,
-                                            :Medicinal ;
-                                   :refers_to_medicinal :Acetylcysteine ;
-                                   :hasAssumptionDuration 30 ;
-                                   :has_daily_quantity 5 .
-
-
-###  https://purl.org/pch#Rossi_Diagnosis_Document
-:Rossi_Diagnosis_Document rdf:type owl:NamedIndividual ,
-                                   :DiseaseDiagnosisDocument ;
-                          :refersToPatient :Mario_Rossi ;
-                          :refers_to_desease :Rossi_Viral_Pneumonia ;
-                          :hasDoctorNotes "Mario Rossi has a serious viral pneumonia in the right lung." ;
-                          :hasEmissionDate "2024-01-31T00:00:00"^^xsd:dateTime .
-
-
-###  https://purl.org/pch#Rossi_Healing_Document
-:Rossi_Healing_Document rdf:type owl:NamedIndividual ,
-                                 :HealingDocument ;
-                        :refersToClinicalDocument :Rossi_Viral_Pneumonia ;
-                        :refersToPatient :Mario_Rossi ;
-                        :hasDoctorNotes "Mario Rossi is in good conditions and he no long has viral pneumonia." ;
-                        :hasEmissionDate "2024-01-31T00:00:00"^^xsd:dateTime .
-
-
-###  https://purl.org/pch#Rossi_Lobectomy_Procedure
-:Rossi_Lobectomy_Procedure rdf:type owl:NamedIndividual ,
-                                    :Procedure ;
-                           :refersToSnomedConcept :Lung_Lobectomy ;
-                           :procedure_duration 120 .
-
-
-###  https://purl.org/pch#Rossi_Lobectomy_Procedure_Document
-:Rossi_Lobectomy_Procedure_Document rdf:type owl:NamedIndividual ,
-                                             :ProcedureExecutionDocument ;
-                                    :has_procedure :Rossi_Lobectomy_Procedure ;
-                                    :refersToClinicalDocument :Rossi_Viral_Pneumonia ;
-                                    :refersToPatient :Mario_Rossi ;
-                                    :hasDoctorNotes "The lobectomy had a positive outcome. The right lung is no more affected by viral pneumonia." ;
-                                    :hasEmissionDate "2024-01-31T00:00:00"^^xsd:dateTime .
-
-
-###  https://purl.org/pch#Rossi_Pneumonia_Prescription_Document
-:Rossi_Pneumonia_Prescription_Document rdf:type owl:NamedIndividual ,
-                                                :PrescriptionMedicinalDocument ;
-                                       :has_prescription :Rossi_Acetylcysteine_Prescription ;
-                                       :refersToClinicalDocument :Rossi_Viral_Pneumonia ;
-                                       :refersToPatient :Mario_Rossi ;
-                                       :hasDoctorNotes "Mario Rossi should take Acetylcysteine for his viral pneumonia." ;
-                                       :hasEmissionDate "2024-01-31T00:00:00"^^xsd:dateTime .
-
-
-###  https://purl.org/pch#Rossi_Viral_Pneumonia
-:Rossi_Viral_Pneumonia rdf:type owl:NamedIndividual ,
-                                :Disease ;
-                       :refersToSnomedConcept :Viral_Pneumonia .
-
-
-###  https://purl.org/pch#Viral_Pneumonia
-:Viral_Pneumonia rdf:type owl:NamedIndividual ,
-                          :SnomedConcept ;
-                 :hasSnomedBrowserLink "https://browser.ihtsdotools.org/?perspective=full&conceptId1=75570004&edition=MAIN&release=&languages=en"^^xsd:anyURI ;
-                 :hasSnomedCode 75570004 .
 
 
 ###  https://purl.org/pch/Mario_Rossi
@@ -431,6 +375,72 @@ foaf:Person rdf:type owl:Class .
              foaf:gender "Male" ;
              foaf:givenName "Mario" ;
              :taxCode "RSSMR90H294N" .
+
+
+###  https://purl.org/pch/Rossi_Acetylcysteine_Prescription
+:Rossi_Acetylcysteine_Prescription rdf:type owl:NamedIndividual ,
+                                            :Medicinal ;
+                                   :refers_to_medicinal :Acetylcysteine ;
+                                   :hasAssumptionDuration 30 ;
+                                   :has_daily_quantity 5 .
+
+
+###  https://purl.org/pch/Rossi_Diagnosis_Document
+:Rossi_Diagnosis_Document rdf:type owl:NamedIndividual ,
+                                   :DiseaseDiagnosisDocument ;
+                          :has_disease :Rossi_Viral_Pneumonia ;
+                          :refersToPatient :Mario_Rossi ;
+                          :hasDoctorNotes "Mario Rossi has a serious viral pneumonia in the right lung." ;
+                          :hasEmissionDate "2024-01-31T00:00:00"^^xsd:dateTime .
+
+
+###  https://purl.org/pch/Rossi_Healing_Document
+:Rossi_Healing_Document rdf:type owl:NamedIndividual ,
+                                 :HealingDocument ;
+                        :refersToPatient :Mario_Rossi ;
+                        :refers_to_disease :Rossi_Viral_Pneumonia ;
+                        :hasDoctorNotes "Mario Rossi is in good conditions and he no long has viral pneumonia." ;
+                        :hasEmissionDate "2024-01-31T00:00:00"^^xsd:dateTime .
+
+
+###  https://purl.org/pch/Rossi_Lobectomy_Procedure
+:Rossi_Lobectomy_Procedure rdf:type owl:NamedIndividual ,
+                                    :Procedure ;
+                           :refersToSnomedConcept :Lung_Lobectomy ;
+                           :procedure_duration 120 .
+
+
+###  https://purl.org/pch/Rossi_Lobectomy_Procedure_Document
+:Rossi_Lobectomy_Procedure_Document rdf:type owl:NamedIndividual ,
+                                             :ProcedureExecutionDocument ;
+                                    :has_procedure :Rossi_Lobectomy_Procedure ;
+                                    :refersToPatient :Mario_Rossi ;
+                                    :refers_to_disease :Rossi_Viral_Pneumonia ;
+                                    :hasDoctorNotes "The lobectomy had a positive outcome. The right lung is no more affected by viral pneumonia." ;
+                                    :hasEmissionDate "2024-01-31T00:00:00"^^xsd:dateTime .
+
+
+###  https://purl.org/pch/Rossi_Pneumonia_Prescription_Document
+:Rossi_Pneumonia_Prescription_Document rdf:type owl:NamedIndividual ,
+                                                :PrescriptionMedicinalDocument ;
+                                       :has_prescription :Rossi_Acetylcysteine_Prescription ;
+                                       :refersToPatient :Mario_Rossi ;
+                                       :refers_to_disease :Rossi_Viral_Pneumonia ;
+                                       :hasDoctorNotes "Mario Rossi should take Acetylcysteine for his viral pneumonia." ;
+                                       :hasEmissionDate "2024-01-31T00:00:00"^^xsd:dateTime .
+
+
+###  https://purl.org/pch/Rossi_Viral_Pneumonia
+:Rossi_Viral_Pneumonia rdf:type owl:NamedIndividual ,
+                                :Disease ;
+                       :refersToSnomedConcept :Viral_Pneumonia .
+
+
+###  https://purl.org/pch/Viral_Pneumonia
+:Viral_Pneumonia rdf:type owl:NamedIndividual ,
+                          :SnomedConcept ;
+                 :hasSnomedBrowserLink "https://browser.ihtsdotools.org/?perspective=full&conceptId1=75570004&edition=MAIN&release=&languages=en"^^xsd:anyURI ;
+                 :hasSnomedCode "75570004" .
 
 
 #################################################################
