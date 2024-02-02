@@ -1,0 +1,13 @@
+PREFIX pch: <https://purl.org/pch/\>
+
+SELECT ?clinicalDocument ?emissionDate
+WHERE {
+  ?patient rdf:type pch:Patient .
+  ?patient pch:taxCode "RSSMR90H294N".
+  ?patient pch:hasClinicalDocument ?clinicalDocument . 
+  ?clinicalDocument pch:hasEmissionDate ?emissionDate .
+}
+
+ORDER BY ?emissionDate
+
+

@@ -1,0 +1,21 @@
+PREFIX pch:<https://purl.org/pch/>
+
+SELECT ?medicinal ?assumptionDuration ?dailyQuantity ?emissionDate
+WHERE {
+  
+  ?patient rdf:type pch:Patient .
+  ?patient pch:taxCode "RSSMR90H294N".
+  ?patient pch:hasClinicalDocument ?prescriptionDoc . 
+  ?prescriptionDoc rdf:type pch:PrescriptionMedicinalDocument .
+  ?prescriptionDoc pch:has_prescription ?prescription .
+  ?prescription rdf:type pch:Medicinal .
+  ?prescription pch:refers_to_medicinal ?medicinal .
+  ?prescription pch:hasAssumptionDuration ?assumptionDuration .
+  ?prescriptionDoc pch:hasEmissionDate ?emissionDate .
+  ?prescription pch:has_daily_quantity ?dailyQuantity .
+}
+
+ORDER BY ?emissionDate
+
+
+

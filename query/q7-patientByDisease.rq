@@ -1,0 +1,15 @@
+PREFIX pch:<https://purl.org/pch/\>
+
+SELECT ?patient ?disease ?emissionDate ?doctorNotes
+WHERE {
+  ?diseaseDocument rdf:type pch:DiseaseDiagnosisDocument .
+  OPTIONAL {?diseaseDocument pch:hasDoctorNotes ?doctorNotes}
+  ?diseaseDocument pch:has_disease ?disease .
+  ?disease pch:refersToSnomedConcept ?snomedConcept . 
+  ?snomedConcept pch:hasSnomedCode "75570004" . 
+  ?diseaseDocument pch:hasEmissionDate ?emissionDate .
+  ?diseaseDocument pch:refersToPatient ?patient
+}
+
+ORDER BY ?emissionDate
+
