@@ -68,14 +68,6 @@ foaf:surname rdf:type owl:AnnotationProperty .
 
 
 #################################################################
-#    Datatypes
-#################################################################
-
-###  http://www.w3.org/2001/XMLSchema#Duration
-xsd:Duration rdf:type rdfs:Datatype .
-
-
-#################################################################
 #    Object Properties
 #################################################################
 
@@ -359,6 +351,22 @@ foaf:Person rdf:type owl:Class .
 #################################################################
 #    Individuals
 #################################################################
+
+###  https://purl.org/pch#Rossi_Lobectomy2_Procedure
+:Rossi_Lobectomy2_Procedure rdf:type owl:NamedIndividual ,
+                                     :Procedure ;
+                            :refersToSnomedConcept :Lung_Lobectomy ;
+                            :procedure_duration 130 .
+
+
+###  https://purl.org/pch#Rossi_Lobectomy2_Procedure_Document
+:Rossi_Lobectomy2_Procedure_Document rdf:type owl:NamedIndividual ,
+                                              :ProcedureExecutionDocument ;
+                                     :has_procedure :Rossi_Lobectomy2_Procedure ;
+                                     :refersToPatient :Mario_Rossi ;
+                                     :refers_to_disease :Rossi_Viral_Pneumonia ;
+                                     :hasEmissionDate "2024-02-23T00:00:00"^^xsd:dateTime .
+
 
 ###  https://purl.org/pch/Acetylcysteine
 :Acetylcysteine rdf:type owl:NamedIndividual ,

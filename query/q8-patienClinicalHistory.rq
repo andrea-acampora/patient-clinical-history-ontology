@@ -1,0 +1,24 @@
+PREFIX pch:<https://purl.org/pch/\>
+
+SELECT ?disease ?medicinal ?procedure ?diagnosisDate 
+WHERE {
+
+  ?patient rdf:type pch:Patient .
+  ?patient pch:taxCode "RSSMR90H294N".
+  
+  ?diseaseDocument rdf:type pch:DiseaseDiagnosisDocument ;
+	pch:refersToPatient ?patient ;
+ 	pch:has_disease ?disease ;
+	pch:hasEmissionDate ?diagnosisDate .
+	  ?medicalDocument rdf:type pch:PrescriptionMedicinalDocument ;
+ 	 pch:has_prescription ?prescription ;
+ 	 pch:refers_to_disease ?disease .
+  ?prescription pch:refers_to_medicinal ?medicinal . 
+  
+  ?procedureDocument rdf:type pch:ProcedureExecutionDocument ;
+  	 pch:has_procedure ?procedure ;
+	 pch:refers_to_disease ?disease . 
+}
+GROUP BY ?disease ?medicinal ?procedure ?diagnosisDate
+ORDER BY ?diagnosisDate
+
