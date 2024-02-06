@@ -7,6 +7,20 @@
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<https://raw.githubusercontent.com/andrea-acampora/patient-clinical-history-ontology/main/snomed_cancer_subset.ttl> a owl:Ontology ;
+    rdfs:label "SNOMED Clinical Terms (subset), International Release, US English Stated Relationships in OWL RDF" ;
+    rdfs:comment """Copyright 2017 The International Health Terminology Standards Development Organisation (IHTSDO).
+All Rights Reserved. SNOMED CT was originally created by The College of American Pathologists. "SNOMED" and
+ "SNOMED CT" are registered trademarks of the IHTSDO.  SNOMED CT has been created by combining SNOMED RT
+and a computer based nomenclature and classification known as Clinical Terms Version 3, formerly known as 
+Read Codes Version 3, which was created on behalf of the UK Department of Health.
+
+This document forms part of the International Release of SNOMED CT distributed by the International Health
+Terminology Standards Development Organisation (IHTSDO), and is subject to the IHTSDO's SNOMED CT Affiliate
+Licence. Details of the SNOMED CT Affiliate Licence may be found at www.ihtsdo.org/our-standards/licensing/""",
+        "Generated as a subset of SNOMED CT" ;
+    owl:versionInfo "(Subset) International Release, Core Module, Release Date: 20170731" .
+    
 sct:102957003 a owl:Class ;
     rdfs:label "Neurological finding (finding)"@en ;
     rdfs:subClassOf sct:404684003 .
@@ -1632,23 +1646,6 @@ sct:94267001 a owl:Class ;
                                             owl:someValuesFrom sct:86394004 ] [ a owl:Restriction ;
                                             owl:onProperty sct:116676008 ;
                                             owl:someValuesFrom sct:14799000 ] ) ] ] ) ] .
-
-# Modified to use a previously downloaded snapshot instead of downloading
-# the latest, to avoid version mismatch and 404s:
-# sctm:900000000000207008cancer_subset a owl:Ontology ;
-<https://raw.githubusercontent.com/yosemiteproject/Tutorial-FHIR-RDF-as-a-Bridge/master/snomed_cancer_subset.ttl> a owl:Ontology ;
-    rdfs:label "SNOMED Clinical Terms (subset), International Release, US English Stated Relationships in OWL RDF" ;
-    rdfs:comment """Copyright 2017 The International Health Terminology Standards Development Organisation (IHTSDO).
-All Rights Reserved. SNOMED CT was originally created by The College of American Pathologists. "SNOMED" and
- "SNOMED CT" are registered trademarks of the IHTSDO.  SNOMED CT has been created by combining SNOMED RT
-and a computer based nomenclature and classification known as Clinical Terms Version 3, formerly known as 
-Read Codes Version 3, which was created on behalf of the UK Department of Health.
-
-This document forms part of the International Release of SNOMED CT distributed by the International Health
-Terminology Standards Development Organisation (IHTSDO), and is subject to the IHTSDO's SNOMED CT Affiliate
-Licence. Details of the SNOMED CT Affiliate Licence may be found at www.ihtsdo.org/our-standards/licensing/""",
-        "Generated as a subset of SNOMED CT" ;
-    owl:versionInfo "(Subset) International Release, Core Module, Release Date: 20170731" .
 
 sct:103379005 a owl:Class ;
     rdfs:label "Procedural approach (qualifier value)"@en ;
