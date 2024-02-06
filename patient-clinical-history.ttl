@@ -12,13 +12,14 @@
 @base <https://purl.org/pch/> .
 
 <https://purl.org/pch> rdf:type owl:Ontology ;
+                        owl:imports <http://hl7.org/fhir/R5/fhir.ttl> ;
                         dc:rights "Patient Clinical History Ontology" ,
                                   "This ontology is licensed under Apache 2.0" ;
-                        dct:creator [ foaf:name "Giacomo" ;
-                                      foaf:surname "Accursi"
-                                    ] ,
-                                    [ foaf:name "Andrea" ;
+                        dct:creator [ foaf:name "Andrea" ;
                                       foaf:surname "Acampora"
+                                    ] ,
+                                    [ foaf:name "Giacomo" ;
+                                      foaf:surname "Accursi"
                                     ] ;
                         dct:description "The ontology Patient Clincal History aim to model the patient clinical data domain and track medicines and procedures."@en ;
                         dct:license <https://www.apache.org/licenses/LICENSE-2.0> ;
@@ -59,6 +60,10 @@ dct:title rdf:type owl:AnnotationProperty .
 vann:preferredNamespacePrefix rdf:type owl:AnnotationProperty .
 
 
+###  http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled
+<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> rdf:type owl:AnnotationProperty .
+
+
 ###  http://xmlns.com/foaf/0.1/name
 foaf:name rdf:type owl:AnnotationProperty .
 
@@ -75,8 +80,16 @@ foaf:surname rdf:type owl:AnnotationProperty .
 :hasClinicalDocument rdf:type owl:ObjectProperty ;
                      rdfs:subPropertyOf owl:topObjectProperty ;
                      owl:inverseOf :refersToPatient ;
-                     rdfs:domain :Patient ;
-                     rdfs:range :ClinicalDocument ;
+                     rdfs:domain foaf:Person ,
+                                 :Patient ;
+                     rdfs:range :ClinicalDocument ,
+                                [ rdf:type owl:Class ;
+                                  owl:unionOf ( :DiseaseDiagnosisDocument
+                                                :HealingDocument
+                                                :PrescriptionMedicinalDocument
+                                                :ProcedureExecutionDocument
+                                              )
+                                ] ;
                      rdfs:comment "This property link a patient to his clinical documents." ;
                      rdfs:isDefinedBy : ;
                      rdfs:label "has clinical document" .
@@ -84,33 +97,95 @@ foaf:surname rdf:type owl:AnnotationProperty .
 
 ###  https://purl.org/pch/has_disease
 :has_disease rdf:type owl:ObjectProperty ;
-             rdfs:domain :DiseaseDiagnosisDocument ;
-             rdfs:range :Disease ;
+             rdfs:domain :ClinicalDocument ,
+                         :DiseaseDiagnosisDocument ,
+                         [ rdf:type owl:Class ;
+                           owl:unionOf ( :DiseaseDiagnosisDocument
+                                         :HealingDocument
+                                         :PrescriptionMedicinalDocument
+                                         :ProcedureExecutionDocument
+                                       )
+                         ] ;
+             rdfs:range :Disease ,
+                        :MedicalEntity ;
              rdfs:isDefinedBy : ;
              rdfs:label "has disease" .
 
 
 ###  https://purl.org/pch/has_prescription
 :has_prescription rdf:type owl:ObjectProperty ;
-                  rdfs:domain :PrescriptionMedicinalDocument ;
-                  rdfs:range :Medicinal ;
+                  rdfs:domain :ClinicalDocument ,
+                              :PrescriptionMedicinalDocument ,
+                              [ rdf:type owl:Class ;
+                                owl:unionOf ( :DiseaseDiagnosisDocument
+                                              :HealingDocument
+                                              :PrescriptionMedicinalDocument
+                                              :ProcedureExecutionDocument
+                                            )
+                              ] ,
+                              [ rdf:type owl:Class ;
+                                owl:unionOf ( :HealingDocument
+                                              :PrescriptionMedicinalDocument
+                                              :ProcedureExecutionDocument
+                                            )
+                              ] ;
+                  rdfs:range :MedicalEntity ,
+                             :Medicinal ;
                   rdfs:isDefinedBy : ;
                   rdfs:label "has prescription" .
 
 
 ###  https://purl.org/pch/has_procedure
 :has_procedure rdf:type owl:ObjectProperty ;
-               rdfs:domain :ProcedureExecutionDocument ;
-               rdfs:range :Procedure ;
+               rdfs:domain :ClinicalDocument ,
+                           :ProcedureExecutionDocument ,
+                           [ rdf:type owl:Class ;
+                             owl:unionOf ( :DiseaseDiagnosisDocument
+                                           :HealingDocument
+                                           :PrescriptionMedicinalDocument
+                                           :ProcedureExecutionDocument
+                                         )
+                           ] ,
+                           [ rdf:type owl:Class ;
+                             owl:unionOf ( :HealingDocument
+                                           :PrescriptionMedicinalDocument
+                                           :ProcedureExecutionDocument
+                                         )
+                           ] ;
+               rdfs:range :MedicalEntity ,
+                          :Procedure ;
                rdfs:isDefinedBy : ;
                rdfs:label "has procedure" .
+
+
+###  https://purl.org/pch/has_signed
+:has_signed rdf:type owl:ObjectProperty ;
+            owl:inverseOf :signed_by ;
+            rdfs:domain foaf:Person ,
+                        :Doctor ;
+            rdfs:range :ClinicalDocument ,
+                       [ rdf:type owl:Class ;
+                         owl:unionOf ( :DiseaseDiagnosisDocument
+                                       :HealingDocument
+                                       :PrescriptionMedicinalDocument
+                                       :ProcedureExecutionDocument
+                                     )
+                       ] .
 
 
 ###  https://purl.org/pch/refersToPatient
 :refersToPatient rdf:type owl:ObjectProperty ,
                           owl:FunctionalProperty ;
-                 rdfs:domain :ClinicalDocument ;
-                 rdfs:range :Patient ;
+                 rdfs:domain :ClinicalDocument ,
+                             [ rdf:type owl:Class ;
+                               owl:unionOf ( :DiseaseDiagnosisDocument
+                                             :HealingDocument
+                                             :PrescriptionMedicinalDocument
+                                             :ProcedureExecutionDocument
+                                           )
+                             ] ;
+                 rdfs:range foaf:Person ,
+                            :Patient ;
                  rdfs:comment "This property link a clinical document to a patient." ;
                  rdfs:isDefinedBy : ;
                  rdfs:label "refers to patient" .
@@ -134,17 +209,33 @@ foaf:surname rdf:type owl:AnnotationProperty .
                                                :ProcedureExecutionDocument
                                              )
                                ] ;
-                   rdfs:range :Disease ;
+                   rdfs:range :Disease ,
+                              :MedicalEntity ;
                    rdfs:isDefinedBy : ;
                    rdfs:label "refers to disease" .
 
 
 ###  https://purl.org/pch/refers_to_medicinal
 :refers_to_medicinal rdf:type owl:ObjectProperty ;
-                     rdfs:domain :Medicinal ;
+                     rdfs:domain :MedicalEntity ,
+                                 :Medicinal ;
                      rdfs:range <http://purl.obolibrary.org/obo/BFO_0000001> ;
                      rdfs:isDefinedBy : ;
                      rdfs:label "refers to medicinal" .
+
+
+###  https://purl.org/pch/signed_by
+:signed_by rdf:type owl:ObjectProperty ;
+           rdfs:domain :ClinicalDocument ,
+                       [ rdf:type owl:Class ;
+                         owl:unionOf ( :DiseaseDiagnosisDocument
+                                       :HealingDocument
+                                       :PrescriptionMedicinalDocument
+                                       :ProcedureExecutionDocument
+                                     )
+                       ] ;
+           rdfs:range foaf:Person ,
+                      :Doctor .
 
 
 #################################################################
@@ -187,7 +278,8 @@ foaf:givenName rdf:type owl:DatatypeProperty ,
 
 ###  https://purl.org/pch/hasAssumptionDuration
 :hasAssumptionDuration rdf:type owl:DatatypeProperty ;
-                       rdfs:domain :Medicinal ;
+                       rdfs:domain :MedicalEntity ,
+                                   :Medicinal ;
                        rdfs:range xsd:int ;
                        rdfs:isDefinedBy : ;
                        rdfs:label "has assumption duration" .
@@ -195,7 +287,14 @@ foaf:givenName rdf:type owl:DatatypeProperty ,
 
 ###  https://purl.org/pch/hasDoctorNotes
 :hasDoctorNotes rdf:type owl:DatatypeProperty ;
-                rdfs:domain :ClinicalDocument ;
+                rdfs:domain :ClinicalDocument ,
+                            [ rdf:type owl:Class ;
+                              owl:unionOf ( :DiseaseDiagnosisDocument
+                                            :HealingDocument
+                                            :PrescriptionMedicinalDocument
+                                            :ProcedureExecutionDocument
+                                          )
+                            ] ;
                 rdfs:range xsd:string ;
                 rdfs:isDefinedBy : ;
                 rdfs:label "has doctor notes" .
@@ -204,7 +303,14 @@ foaf:givenName rdf:type owl:DatatypeProperty ,
 ###  https://purl.org/pch/hasEmissionDate
 :hasEmissionDate rdf:type owl:DatatypeProperty ,
                           owl:FunctionalProperty ;
-                 rdfs:domain :ClinicalDocument ;
+                 rdfs:domain :ClinicalDocument ,
+                             [ rdf:type owl:Class ;
+                               owl:unionOf ( :DiseaseDiagnosisDocument
+                                             :HealingDocument
+                                             :PrescriptionMedicinalDocument
+                                             :ProcedureExecutionDocument
+                                           )
+                             ] ;
                  rdfs:range xsd:dateTime ;
                  rdfs:isDefinedBy : ;
                  rdfs:label "has emission date" .
@@ -233,7 +339,8 @@ foaf:givenName rdf:type owl:DatatypeProperty ,
 ###  https://purl.org/pch/has_daily_quantity
 :has_daily_quantity rdf:type owl:DatatypeProperty ,
                              owl:FunctionalProperty ;
-                    rdfs:domain :Medicinal ;
+                    rdfs:domain :MedicalEntity ,
+                                :Medicinal ;
                     rdfs:range xsd:int ;
                     rdfs:isDefinedBy : ;
                     rdfs:label "has daily quantity" .
@@ -248,7 +355,8 @@ foaf:givenName rdf:type owl:DatatypeProperty ,
 ###  https://purl.org/pch/taxCode
 :taxCode rdf:type owl:DatatypeProperty ,
                   owl:FunctionalProperty ;
-         rdfs:domain :Patient ;
+         rdfs:domain foaf:Person ,
+                     :Patient ;
          rdfs:range xsd:string ;
          rdfs:isDefinedBy : ;
          rdfs:label "tax code" .
@@ -279,6 +387,13 @@ foaf:Person rdf:type owl:Class .
                                                       :ProcedureExecutionDocument
                                                     )
                                       ] ;
+                  rdfs:subClassOf [ rdf:type owl:Class ;
+                                    owl:unionOf ( :DiseaseDiagnosisDocument
+                                                  :HealingDocument
+                                                  :PrescriptionMedicinalDocument
+                                                  :ProcedureExecutionDocument
+                                                )
+                                  ] ;
                   rdfs:comment "This class includes all the documents related to a Patient" ;
                   rdfs:isDefinedBy <https://purl.org/pch> ;
                   rdfs:label "Clinical Document" .
@@ -292,14 +407,39 @@ foaf:Person rdf:type owl:Class .
 
 ###  https://purl.org/pch/DiseaseDiagnosisDocument
 :DiseaseDiagnosisDocument rdf:type owl:Class ;
-                          rdfs:subClassOf :ClinicalDocument ;
+                          rdfs:subClassOf :ClinicalDocument ,
+                                          [ rdf:type owl:Class ;
+                                            owl:unionOf ( :DiseaseDiagnosisDocument
+                                                          :HealingDocument
+                                                          :PrescriptionMedicinalDocument
+                                                          :ProcedureExecutionDocument
+                                                        )
+                                          ] ;
                           rdfs:isDefinedBy : ;
                           rdfs:label "Disease Diagnosis Document" .
 
 
+###  https://purl.org/pch/Doctor
+:Doctor rdf:type owl:Class ;
+        rdfs:subClassOf foaf:Person .
+
+
 ###  https://purl.org/pch/HealingDocument
 :HealingDocument rdf:type owl:Class ;
-                 rdfs:subClassOf :ClinicalDocument ;
+                 rdfs:subClassOf :ClinicalDocument ,
+                                 [ rdf:type owl:Class ;
+                                   owl:unionOf ( :DiseaseDiagnosisDocument
+                                                 :HealingDocument
+                                                 :PrescriptionMedicinalDocument
+                                                 :ProcedureExecutionDocument
+                                               )
+                                 ] ,
+                                 [ rdf:type owl:Class ;
+                                   owl:unionOf ( :HealingDocument
+                                                 :PrescriptionMedicinalDocument
+                                                 :ProcedureExecutionDocument
+                                               )
+                                 ] ;
                  rdfs:isDefinedBy : ;
                  rdfs:label "Healing Document" .
 
@@ -324,7 +464,20 @@ foaf:Person rdf:type owl:Class .
 
 ###  https://purl.org/pch/PrescriptionMedicinalDocument
 :PrescriptionMedicinalDocument rdf:type owl:Class ;
-                               rdfs:subClassOf :ClinicalDocument ;
+                               rdfs:subClassOf :ClinicalDocument ,
+                                               [ rdf:type owl:Class ;
+                                                 owl:unionOf ( :DiseaseDiagnosisDocument
+                                                               :HealingDocument
+                                                               :PrescriptionMedicinalDocument
+                                                               :ProcedureExecutionDocument
+                                                             )
+                                               ] ,
+                                               [ rdf:type owl:Class ;
+                                                 owl:unionOf ( :HealingDocument
+                                                               :PrescriptionMedicinalDocument
+                                                               :ProcedureExecutionDocument
+                                                             )
+                                               ] ;
                                rdfs:isDefinedBy : ;
                                rdfs:label "Prescription Medicinal Document" .
 
@@ -337,7 +490,20 @@ foaf:Person rdf:type owl:Class .
 
 ###  https://purl.org/pch/ProcedureExecutionDocument
 :ProcedureExecutionDocument rdf:type owl:Class ;
-                            rdfs:subClassOf :ClinicalDocument ;
+                            rdfs:subClassOf :ClinicalDocument ,
+                                            [ rdf:type owl:Class ;
+                                              owl:unionOf ( :DiseaseDiagnosisDocument
+                                                            :HealingDocument
+                                                            :PrescriptionMedicinalDocument
+                                                            :ProcedureExecutionDocument
+                                                          )
+                                            ] ,
+                                            [ rdf:type owl:Class ;
+                                              owl:unionOf ( :HealingDocument
+                                                            :PrescriptionMedicinalDocument
+                                                            :ProcedureExecutionDocument
+                                                          )
+                                            ] ;
                             rdfs:isDefinedBy : ;
                             rdfs:label "Procedure Document" .
 
@@ -352,25 +518,24 @@ foaf:Person rdf:type owl:Class .
 #    Individuals
 #################################################################
 
-###  https://purl.org/pch#Rossi_Lobectomy2_Procedure
-:Rossi_Lobectomy2_Procedure rdf:type owl:NamedIndividual ,
-                                     :Procedure ;
-                            :refersToSnomedConcept :Lung_Lobectomy ;
-                            :procedure_duration 130 .
-
-
-###  https://purl.org/pch#Rossi_Lobectomy2_Procedure_Document
-:Rossi_Lobectomy2_Procedure_Document rdf:type owl:NamedIndividual ,
-                                              :ProcedureExecutionDocument ;
-                                     :has_procedure :Rossi_Lobectomy2_Procedure ;
-                                     :refersToPatient :Mario_Rossi ;
-                                     :refers_to_disease :Rossi_Viral_Pneumonia ;
-                                     :hasEmissionDate "2024-02-23T00:00:00"^^xsd:dateTime .
-
-
 ###  https://purl.org/pch/Acetylcysteine
 :Acetylcysteine rdf:type owl:NamedIndividual ,
+                         <http://purl.obolibrary.org/obo/BFO_0000001> ,
                          <http://purl.obolibrary.org/obo/CHEBI_22198> .
+
+
+###  https://purl.org/pch/Andrea_Bianchi
+:Andrea_Bianchi rdf:type owl:NamedIndividual ,
+                         foaf:Person ,
+                         :Doctor ;
+                :has_signed :Rossi_Diagnosis_Document ,
+                            :Rossi_Healing_Document ,
+                            :Rossi_Lobectomy_Procedure_Document ,
+                            :Rossi_Pneumonia_Prescription_Document ;
+                foaf:birthday "1970-01-01T00:00:00"^^xsd:dateTime ;
+                foaf:familyName "Bianchi" ;
+                foaf:gender "Male" ;
+                foaf:givenName "Andrea" .
 
 
 ###  https://purl.org/pch/Lung_Lobectomy
@@ -382,11 +547,14 @@ foaf:Person rdf:type owl:Class .
 
 ###  https://purl.org/pch/Mario_Rossi
 :Mario_Rossi rdf:type owl:NamedIndividual ,
+                      foaf:Person ,
                       :Patient ;
              :hasClinicalDocument :Rossi_Diagnosis_Document ,
                                   :Rossi_Healing_Document ,
+                                  :Rossi_Lobectomy2_Procedure_Document ,
                                   :Rossi_Lobectomy_Procedure_Document ,
                                   :Rossi_Pneumonia_Prescription_Document ;
+             foaf:birthday "1960-01-01T00:00:00"^^xsd:dateTime ;
              foaf:familyName "Rossi" ;
              foaf:gender "Male" ;
              foaf:givenName "Mario" ;
@@ -395,6 +563,7 @@ foaf:Person rdf:type owl:Class .
 
 ###  https://purl.org/pch/Rossi_Acetylcysteine_Prescription
 :Rossi_Acetylcysteine_Prescription rdf:type owl:NamedIndividual ,
+                                            :MedicalEntity ,
                                             :Medicinal ;
                                    :refers_to_medicinal :Acetylcysteine ;
                                    :hasAssumptionDuration 30 ;
@@ -403,24 +572,80 @@ foaf:Person rdf:type owl:Class .
 
 ###  https://purl.org/pch/Rossi_Diagnosis_Document
 :Rossi_Diagnosis_Document rdf:type owl:NamedIndividual ,
-                                   :DiseaseDiagnosisDocument ;
+                                   :ClinicalDocument ,
+                                   :DiseaseDiagnosisDocument ,
+                                   [ rdf:type owl:Class ;
+                                     owl:unionOf ( :DiseaseDiagnosisDocument
+                                                   :HealingDocument
+                                                   :PrescriptionMedicinalDocument
+                                                   :ProcedureExecutionDocument
+                                                 )
+                                   ] ;
                           :has_disease :Rossi_Viral_Pneumonia ;
                           :refersToPatient :Mario_Rossi ;
+                          :signed_by :Andrea_Bianchi ;
                           :hasDoctorNotes "Mario Rossi has a serious viral pneumonia in the right lung." ;
                           :hasEmissionDate "2024-01-31T00:00:00"^^xsd:dateTime .
 
 
 ###  https://purl.org/pch/Rossi_Healing_Document
 :Rossi_Healing_Document rdf:type owl:NamedIndividual ,
-                                 :HealingDocument ;
+                                 :ClinicalDocument ,
+                                 :HealingDocument ,
+                                 [ rdf:type owl:Class ;
+                                   owl:unionOf ( :DiseaseDiagnosisDocument
+                                                 :HealingDocument
+                                                 :PrescriptionMedicinalDocument
+                                                 :ProcedureExecutionDocument
+                                               )
+                                 ] ,
+                                 [ rdf:type owl:Class ;
+                                   owl:unionOf ( :HealingDocument
+                                                 :PrescriptionMedicinalDocument
+                                                 :ProcedureExecutionDocument
+                                               )
+                                 ] ;
                         :refersToPatient :Mario_Rossi ;
                         :refers_to_disease :Rossi_Viral_Pneumonia ;
+                        :signed_by :Andrea_Bianchi ;
                         :hasDoctorNotes "Mario Rossi is in good conditions and he no long has viral pneumonia." ;
                         :hasEmissionDate "2024-01-31T00:00:00"^^xsd:dateTime .
 
 
+###  https://purl.org/pch/Rossi_Lobectomy2_Procedure
+:Rossi_Lobectomy2_Procedure rdf:type owl:NamedIndividual ,
+                                     :MedicalEntity ,
+                                     :Procedure ;
+                            :refersToSnomedConcept :Lung_Lobectomy ;
+                            :procedure_duration 130 .
+
+
+###  https://purl.org/pch/Rossi_Lobectomy2_Procedure_Document
+:Rossi_Lobectomy2_Procedure_Document rdf:type owl:NamedIndividual ,
+                                              :ClinicalDocument ,
+                                              :ProcedureExecutionDocument ,
+                                              [ rdf:type owl:Class ;
+                                                owl:unionOf ( :DiseaseDiagnosisDocument
+                                                              :HealingDocument
+                                                              :PrescriptionMedicinalDocument
+                                                              :ProcedureExecutionDocument
+                                                            )
+                                              ] ,
+                                              [ rdf:type owl:Class ;
+                                                owl:unionOf ( :HealingDocument
+                                                              :PrescriptionMedicinalDocument
+                                                              :ProcedureExecutionDocument
+                                                            )
+                                              ] ;
+                                     :has_procedure :Rossi_Lobectomy2_Procedure ;
+                                     :refersToPatient :Mario_Rossi ;
+                                     :refers_to_disease :Rossi_Viral_Pneumonia ;
+                                     :hasEmissionDate "2024-02-23T00:00:00"^^xsd:dateTime .
+
+
 ###  https://purl.org/pch/Rossi_Lobectomy_Procedure
 :Rossi_Lobectomy_Procedure rdf:type owl:NamedIndividual ,
+                                    :MedicalEntity ,
                                     :Procedure ;
                            :refersToSnomedConcept :Lung_Lobectomy ;
                            :procedure_duration 120 .
@@ -428,27 +653,58 @@ foaf:Person rdf:type owl:Class .
 
 ###  https://purl.org/pch/Rossi_Lobectomy_Procedure_Document
 :Rossi_Lobectomy_Procedure_Document rdf:type owl:NamedIndividual ,
-                                             :ProcedureExecutionDocument ;
+                                             :ClinicalDocument ,
+                                             :ProcedureExecutionDocument ,
+                                             [ rdf:type owl:Class ;
+                                               owl:unionOf ( :DiseaseDiagnosisDocument
+                                                             :HealingDocument
+                                                             :PrescriptionMedicinalDocument
+                                                             :ProcedureExecutionDocument
+                                                           )
+                                             ] ,
+                                             [ rdf:type owl:Class ;
+                                               owl:unionOf ( :HealingDocument
+                                                             :PrescriptionMedicinalDocument
+                                                             :ProcedureExecutionDocument
+                                                           )
+                                             ] ;
                                     :has_procedure :Rossi_Lobectomy_Procedure ;
                                     :refersToPatient :Mario_Rossi ;
                                     :refers_to_disease :Rossi_Viral_Pneumonia ;
+                                    :signed_by :Andrea_Bianchi ;
                                     :hasDoctorNotes "The lobectomy had a positive outcome. The right lung is no more affected by viral pneumonia." ;
                                     :hasEmissionDate "2024-01-31T00:00:00"^^xsd:dateTime .
 
 
 ###  https://purl.org/pch/Rossi_Pneumonia_Prescription_Document
 :Rossi_Pneumonia_Prescription_Document rdf:type owl:NamedIndividual ,
-                                                :PrescriptionMedicinalDocument ;
+                                                :ClinicalDocument ,
+                                                :PrescriptionMedicinalDocument ,
+                                                [ rdf:type owl:Class ;
+                                                  owl:unionOf ( :DiseaseDiagnosisDocument
+                                                                :HealingDocument
+                                                                :PrescriptionMedicinalDocument
+                                                                :ProcedureExecutionDocument
+                                                              )
+                                                ] ,
+                                                [ rdf:type owl:Class ;
+                                                  owl:unionOf ( :HealingDocument
+                                                                :PrescriptionMedicinalDocument
+                                                                :ProcedureExecutionDocument
+                                                              )
+                                                ] ;
                                        :has_prescription :Rossi_Acetylcysteine_Prescription ;
                                        :refersToPatient :Mario_Rossi ;
                                        :refers_to_disease :Rossi_Viral_Pneumonia ;
+                                       :signed_by :Andrea_Bianchi ;
                                        :hasDoctorNotes "Mario Rossi should take Acetylcysteine for his viral pneumonia." ;
                                        :hasEmissionDate "2024-01-31T00:00:00"^^xsd:dateTime .
 
 
 ###  https://purl.org/pch/Rossi_Viral_Pneumonia
 :Rossi_Viral_Pneumonia rdf:type owl:NamedIndividual ,
-                                :Disease ;
+                                :Disease ,
+                                :MedicalEntity ;
                        :refersToSnomedConcept :Viral_Pneumonia .
 
 
@@ -462,6 +718,16 @@ foaf:Person rdf:type owl:Class .
 #################################################################
 #    General axioms
 #################################################################
+
+[ rdf:type owl:Class ;
+  owl:unionOf ( :DiseaseDiagnosisDocument
+                :HealingDocument
+                :PrescriptionMedicinalDocument
+                :ProcedureExecutionDocument
+              ) ;
+  rdfs:subClassOf :ClinicalDocument
+] .
+
 
 [ rdf:type owl:AllDisjointClasses ;
   owl:members ( :DiseaseDiagnosisDocument
