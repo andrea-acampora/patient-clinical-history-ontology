@@ -3,23 +3,25 @@
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sct: <http://snomed.info/id/> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sctm: <http://snomed.info/sct/subset/> .
 @prefix vann: <http://purl.org/vocab/vann/> .
 @prefix schema: <http://schema.org/> .
 @base <https://purl.org/pch/> .
 
 <https://purl.org/pch> rdf:type owl:Ontology ;
-                        owl:imports <http://hl7.org/fhir/R5/fhir.ttl> ;
+                        owl:imports <https://raw.githubusercontent.com/andrea-acampora/patient-clinical-history-ontology/main/snomed_cancer_subset.ttl> ;
                         dc:rights "Patient Clinical History Ontology" ,
                                   "This ontology is licensed under Apache 2.0" ;
-                        dct:creator [ foaf:name "Andrea" ;
-                                      foaf:surname "Acampora"
-                                    ] ,
-                                    [ foaf:name "Giacomo" ;
+                        dct:creator [ foaf:name "Giacomo" ;
                                       foaf:surname "Accursi"
+                                    ] ,
+                                    [ foaf:name "Andrea" ;
+                                      foaf:surname "Acampora"
                                     ] ;
                         dct:description "The ontology Patient Clincal History aim to model the patient clinical data domain and track medicines and procedures."@en ;
                         dct:license <https://www.apache.org/licenses/LICENSE-2.0> ;
@@ -195,7 +197,7 @@ foaf:surname rdf:type owl:AnnotationProperty .
 :refersToSnomedConcept rdf:type owl:ObjectProperty ,
                                 owl:FunctionalProperty ;
                        rdfs:domain :MedicalEntity ;
-                       rdfs:range :SnomedConcept ;
+                       rdfs:range <http://snomed.info/id/138875005> ;
                        rdfs:comment "This property link a medical entity to its snomed concept." ;
                        rdfs:isDefinedBy : ;
                        rdfs:label "refers to snomed concept" .
@@ -320,7 +322,6 @@ foaf:givenName rdf:type owl:DatatypeProperty ,
 :hasSnomedBrowserLink rdf:type owl:DatatypeProperty ;
                       rdfs:subPropertyOf owl:topDataProperty ;
                       rdf:type owl:FunctionalProperty ;
-                      rdfs:domain :SnomedConcept ;
                       rdfs:range xsd:anyURI ;
                       rdfs:isDefinedBy : ;
                       rdfs:label "has snomed broswer link" .
@@ -330,7 +331,6 @@ foaf:givenName rdf:type owl:DatatypeProperty ,
 :hasSnomedCode rdf:type owl:DatatypeProperty ;
                rdfs:subPropertyOf owl:topDataProperty ;
                rdf:type owl:FunctionalProperty ;
-               rdfs:domain :SnomedConcept ;
                rdfs:range xsd:string ;
                rdfs:isDefinedBy : ;
                rdfs:label "has snomed code" .
@@ -508,15 +508,49 @@ foaf:Person rdf:type owl:Class .
                             rdfs:label "Procedure Document" .
 
 
-###  https://purl.org/pch/SnomedConcept
-:SnomedConcept rdf:type owl:Class ;
-               rdfs:isDefinedBy : ;
-               rdfs:label "Snomed Concept" .
-
-
 #################################################################
 #    Individuals
 #################################################################
+
+###  https://purl.org/pch#Cranium_Operation
+:Cranium_Operation rdf:type owl:NamedIndividual ,
+                            <http://snomed.info/id/265702005> .
+
+
+###  https://purl.org/pch#Rossi_Cancer_Diagnosis_Document
+:Rossi_Cancer_Diagnosis_Document rdf:type owl:NamedIndividual ;
+                                 :has_disease :Rossi_Cancer_Disease ;
+                                 :refersToPatient :Mario_Rossi ;
+                                 :signed_by :Andrea_Bianchi ;
+                                 :hasDoctorNotes "The patient has cancer." ;
+                                 :hasEmissionDate "2024-01-01T00:00:00"^^xsd:dateTime .
+
+
+###  https://purl.org/pch#Rossi_Cancer_Disease
+:Rossi_Cancer_Disease rdf:type owl:NamedIndividual ,
+                               :Disease .
+
+
+###  https://purl.org/pch#Rossi_Cranium_Operation_Document
+:Rossi_Cranium_Operation_Document rdf:type owl:NamedIndividual ,
+                                           :ProcedureExecutionDocument ;
+                                  :refersToPatient :Mario_Rossi ;
+                                  :refers_to_disease :Rossi_Cancer_Disease ;
+                                  :signed_by :Andrea_Bianchi ;
+                                  :hasEmissionDate "2024-02-01T00:00:00"^^xsd:dateTime .
+
+
+###  https://purl.org/pch#Rossi_Cranium_Procedure_Execution
+:Rossi_Cranium_Procedure_Execution rdf:type owl:NamedIndividual ,
+                                            :Procedure ;
+                                   :refersToSnomedConcept :Cranium_Operation ;
+                                   :procedure_duration 180 .
+
+
+###  https://purl.org/pch#Tumor_of_pituitary_and_suprasellar_region
+:Tumor_of_pituitary_and_suprasellar_region rdf:type owl:NamedIndividual ,
+                                                    <http://snomed.info/id/237721006> .
+
 
 ###  https://purl.org/pch/Acetylcysteine
 :Acetylcysteine rdf:type owl:NamedIndividual ,
@@ -536,13 +570,6 @@ foaf:Person rdf:type owl:Class .
                 foaf:familyName "Bianchi" ;
                 foaf:gender "Male" ;
                 foaf:givenName "Andrea" .
-
-
-###  https://purl.org/pch/Lung_Lobectomy
-:Lung_Lobectomy rdf:type owl:NamedIndividual ,
-                         :SnomedConcept ;
-                :hasSnomedBrowserLink "https://browser.ihtsdotools.org/?perspective=full&conceptId1=173171007&edition=MAIN&release=&languages=en"^^xsd:anyURI ;
-                :hasSnomedCode "173171007" .
 
 
 ###  https://purl.org/pch/Mario_Rossi
@@ -606,17 +633,16 @@ foaf:Person rdf:type owl:Class .
                                                )
                                  ] ;
                         :refersToPatient :Mario_Rossi ;
-                        :refers_to_disease :Rossi_Viral_Pneumonia ;
+                        :refers_to_disease :Rossi_Cancer_Disease ;
                         :signed_by :Andrea_Bianchi ;
-                        :hasDoctorNotes "Mario Rossi is in good conditions and he no long has viral pneumonia." ;
-                        :hasEmissionDate "2024-01-31T00:00:00"^^xsd:dateTime .
+                        :hasDoctorNotes "Mario Rossi is in good conditions and he no long has cancer." ;
+                        :hasEmissionDate "2024-02-21T00:00:00"^^xsd:dateTime .
 
 
 ###  https://purl.org/pch/Rossi_Lobectomy2_Procedure
 :Rossi_Lobectomy2_Procedure rdf:type owl:NamedIndividual ,
                                      :MedicalEntity ,
                                      :Procedure ;
-                            :refersToSnomedConcept :Lung_Lobectomy ;
                             :procedure_duration 130 .
 
 
@@ -647,7 +673,6 @@ foaf:Person rdf:type owl:Class .
 :Rossi_Lobectomy_Procedure rdf:type owl:NamedIndividual ,
                                     :MedicalEntity ,
                                     :Procedure ;
-                           :refersToSnomedConcept :Lung_Lobectomy ;
                            :procedure_duration 120 .
 
 
@@ -704,15 +729,7 @@ foaf:Person rdf:type owl:Class .
 ###  https://purl.org/pch/Rossi_Viral_Pneumonia
 :Rossi_Viral_Pneumonia rdf:type owl:NamedIndividual ,
                                 :Disease ,
-                                :MedicalEntity ;
-                       :refersToSnomedConcept :Viral_Pneumonia .
-
-
-###  https://purl.org/pch/Viral_Pneumonia
-:Viral_Pneumonia rdf:type owl:NamedIndividual ,
-                          :SnomedConcept ;
-                 :hasSnomedBrowserLink "https://browser.ihtsdotools.org/?perspective=full&conceptId1=75570004&edition=MAIN&release=&languages=en"^^xsd:anyURI ;
-                 :hasSnomedCode "75570004" .
+                                :MedicalEntity .
 
 
 #################################################################
