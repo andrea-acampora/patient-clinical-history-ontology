@@ -78,6 +78,19 @@ foaf:surname rdf:type owl:AnnotationProperty .
 #    Object Properties
 #################################################################
 
+###  https://purl.org/pch#has_recovered_from_disease
+:has_recovered_from_disease rdf:type owl:ObjectProperty ;
+                            rdfs:domain :Patient ;
+                            rdfs:range :Disease .
+
+
+###  https://purl.org/pch#is_linked_with
+:is_linked_with rdf:type owl:ObjectProperty ,
+                         owl:SymmetricProperty ;
+                rdfs:domain <http://snomed.info/id/138875005> ;
+                rdfs:range <http://snomed.info/id/138875005> .
+
+
 ###  https://purl.org/pch/hasClinicalDocument
 :hasClinicalDocument rdf:type owl:ObjectProperty ;
                      rdfs:subPropertyOf owl:topObjectProperty ;
@@ -512,46 +525,6 @@ foaf:Person rdf:type owl:Class .
 #    Individuals
 #################################################################
 
-###  https://purl.org/pch#Cranium_Operation
-:Cranium_Operation rdf:type owl:NamedIndividual ,
-                            <http://snomed.info/id/265702005> .
-
-
-###  https://purl.org/pch#Rossi_Cancer_Diagnosis_Document
-:Rossi_Cancer_Diagnosis_Document rdf:type owl:NamedIndividual ;
-                                 :has_disease :Rossi_Cancer_Disease ;
-                                 :refersToPatient :Mario_Rossi ;
-                                 :signed_by :Andrea_Bianchi ;
-                                 :hasDoctorNotes "The patient has cancer." ;
-                                 :hasEmissionDate "2024-01-01T00:00:00"^^xsd:dateTime .
-
-
-###  https://purl.org/pch#Rossi_Cancer_Disease
-:Rossi_Cancer_Disease rdf:type owl:NamedIndividual ,
-                               :Disease .
-
-
-###  https://purl.org/pch#Rossi_Cranium_Operation_Document
-:Rossi_Cranium_Operation_Document rdf:type owl:NamedIndividual ,
-                                           :ProcedureExecutionDocument ;
-                                  :refersToPatient :Mario_Rossi ;
-                                  :refers_to_disease :Rossi_Cancer_Disease ;
-                                  :signed_by :Andrea_Bianchi ;
-                                  :hasEmissionDate "2024-02-01T00:00:00"^^xsd:dateTime .
-
-
-###  https://purl.org/pch#Rossi_Cranium_Procedure_Execution
-:Rossi_Cranium_Procedure_Execution rdf:type owl:NamedIndividual ,
-                                            :Procedure ;
-                                   :refersToSnomedConcept :Cranium_Operation ;
-                                   :procedure_duration 180 .
-
-
-###  https://purl.org/pch#Tumor_of_pituitary_and_suprasellar_region
-:Tumor_of_pituitary_and_suprasellar_region rdf:type owl:NamedIndividual ,
-                                                    <http://snomed.info/id/237721006> .
-
-
 ###  https://purl.org/pch/Acetylcysteine
 :Acetylcysteine rdf:type owl:NamedIndividual ,
                          <http://purl.obolibrary.org/obo/BFO_0000001> ,
@@ -570,6 +543,11 @@ foaf:Person rdf:type owl:Class .
                 foaf:familyName "Bianchi" ;
                 foaf:gender "Male" ;
                 foaf:givenName "Andrea" .
+
+
+###  https://purl.org/pch/Cranium_Operation
+:Cranium_Operation rdf:type owl:NamedIndividual ,
+                            <http://snomed.info/id/265702005> .
 
 
 ###  https://purl.org/pch/Mario_Rossi
@@ -595,6 +573,38 @@ foaf:Person rdf:type owl:Class .
                                    :refers_to_medicinal :Acetylcysteine ;
                                    :hasAssumptionDuration 30 ;
                                    :has_daily_quantity 5 .
+
+
+###  https://purl.org/pch/Rossi_Cancer_Diagnosis_Document
+:Rossi_Cancer_Diagnosis_Document rdf:type owl:NamedIndividual ;
+                                 :has_disease :Rossi_Cancer_Disease ;
+                                 :refersToPatient :Mario_Rossi ;
+                                 :signed_by :Andrea_Bianchi ;
+                                 :hasDoctorNotes "The patient has cancer." ;
+                                 :hasEmissionDate "2024-01-01T00:00:00"^^xsd:dateTime .
+
+
+###  https://purl.org/pch/Rossi_Cancer_Disease
+:Rossi_Cancer_Disease rdf:type owl:NamedIndividual ,
+                               :Disease ;
+                      :refersToSnomedConcept :Tumor_of_pituitary_and_suprasellar_region .
+
+
+###  https://purl.org/pch/Rossi_Cranium_Operation_Document
+:Rossi_Cranium_Operation_Document rdf:type owl:NamedIndividual ,
+                                           :ProcedureExecutionDocument ;
+                                  :has_procedure :Rossi_Cranium_Procedure_Execution ;
+                                  :refersToPatient :Mario_Rossi ;
+                                  :refers_to_disease :Rossi_Cancer_Disease ;
+                                  :signed_by :Andrea_Bianchi ;
+                                  :hasEmissionDate "2024-02-01T00:00:00"^^xsd:dateTime .
+
+
+###  https://purl.org/pch/Rossi_Cranium_Procedure_Execution
+:Rossi_Cranium_Procedure_Execution rdf:type owl:NamedIndividual ,
+                                            :Procedure ;
+                                   :refersToSnomedConcept :Cranium_Operation ;
+                                   :procedure_duration 180 .
 
 
 ###  https://purl.org/pch/Rossi_Diagnosis_Document
@@ -732,6 +742,11 @@ foaf:Person rdf:type owl:Class .
                                 :MedicalEntity .
 
 
+###  https://purl.org/pch/Tumor_of_pituitary_and_suprasellar_region
+:Tumor_of_pituitary_and_suprasellar_region rdf:type owl:NamedIndividual ,
+                                                    <http://snomed.info/id/237721006> .
+
+
 #################################################################
 #    General axioms
 #################################################################
@@ -754,5 +769,120 @@ foaf:Person rdf:type owl:Class .
               )
 ] .
 
+
+#################################################################
+#    Rules
+#################################################################
+
+:patient rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+:doc rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+:disease rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+:healingDoc rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+:procedure rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+:procedureConcept rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+:diseaseConcept rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
+   rdfs:comment "" ;
+   rdfs:label "Patient_Disease_Recovered" ;
+   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
+   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#classPredicate> :Patient ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> :patient
+                                                     ] ;
+                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> :hasClinicalDocument ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument1> :patient ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument2> :doc
+                                                                ] ;
+                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                             <http://www.w3.org/2003/11/swrl#propertyPredicate> :has_disease ;
+                                                                             <http://www.w3.org/2003/11/swrl#argument1> :doc ;
+                                                                             <http://www.w3.org/2003/11/swrl#argument2> :disease
+                                                                           ] ;
+                                                                 rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                                                        <http://www.w3.org/2003/11/swrl#classPredicate> :HealingDocument ;
+                                                                                        <http://www.w3.org/2003/11/swrl#argument1> :healingDoc
+                                                                                      ] ;
+                                                                            rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> :refers_to_disease ;
+                                                                                                   <http://www.w3.org/2003/11/swrl#argument1> :healingDoc ;
+                                                                                                   <http://www.w3.org/2003/11/swrl#argument2> :disease
+                                                                                                 ] ;
+                                                                                       rdf:rest rdf:nil
+                                                                                     ]
+                                                                          ]
+                                                               ]
+                                                    ]
+                                         ] ;
+   <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> :has_recovered_from_disease ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> :patient ;
+                                                       <http://www.w3.org/2003/11/swrl#argument2> :disease
+                                                     ] ;
+                                           rdf:rest rdf:nil
+                                         ]
+ ] .
+
+[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
+   rdfs:comment "" ;
+   rdfs:label "Link_Snomed_Concepts" ;
+   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
+   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#classPredicate> :ProcedureExecutionDocument ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> :doc
+                                                     ] ;
+                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> :has_procedure ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument1> :doc ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument2> :procedure
+                                                                ] ;
+                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                             <http://www.w3.org/2003/11/swrl#propertyPredicate> :refersToSnomedConcept ;
+                                                                             <http://www.w3.org/2003/11/swrl#argument1> :procedure ;
+                                                                             <http://www.w3.org/2003/11/swrl#argument2> :procedureConcept
+                                                                           ] ;
+                                                                 rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> :refers_to_disease ;
+                                                                                        <http://www.w3.org/2003/11/swrl#argument1> :doc ;
+                                                                                        <http://www.w3.org/2003/11/swrl#argument2> :disease
+                                                                                      ] ;
+                                                                            rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> :refersToSnomedConcept ;
+                                                                                                   <http://www.w3.org/2003/11/swrl#argument1> :disease ;
+                                                                                                   <http://www.w3.org/2003/11/swrl#argument2> :diseaseConcept
+                                                                                                 ] ;
+                                                                                       rdf:rest rdf:nil
+                                                                                     ]
+                                                                          ]
+                                                               ]
+                                                    ]
+                                         ] ;
+   <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> :is_linked_with ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> :procedureConcept ;
+                                                       <http://www.w3.org/2003/11/swrl#argument2> :diseaseConcept
+                                                     ] ;
+                                           rdf:rest rdf:nil
+                                         ]
+ ] .
 
 ###  Generated by the OWL API (version 4.5.26.2023-07-17T20:34:13Z) https://github.com/owlcs/owlapi
