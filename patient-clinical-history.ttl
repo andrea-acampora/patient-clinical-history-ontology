@@ -82,7 +82,8 @@ foaf:surname rdf:type owl:AnnotationProperty .
 :is_linked_with rdf:type owl:ObjectProperty ,
                          owl:SymmetricProperty ;
                 rdfs:domain <http://snomed.info/id/138875005> ;
-                rdfs:range <http://snomed.info/id/138875005> .
+                rdfs:range <http://snomed.info/id/138875005> ;
+                rdfs:isDefinedBy : .
 
 
 ###  https://purl.org/pch/hasClinicalDocument
@@ -179,7 +180,8 @@ foaf:surname rdf:type owl:AnnotationProperty .
                                        :PrescriptionMedicinalDocument
                                        :ProcedureExecutionDocument
                                      )
-                       ] .
+                       ] ;
+            rdfs:isDefinedBy : .
 
 
 ###  https://purl.org/pch/refersToPatient
@@ -244,7 +246,8 @@ foaf:surname rdf:type owl:AnnotationProperty .
                                      )
                        ] ;
            rdfs:range foaf:Person ,
-                      :Doctor .
+                      :Doctor ;
+           rdfs:isDefinedBy : .
 
 
 #################################################################
@@ -416,7 +419,9 @@ foaf:Person rdf:type owl:Class .
 ###  https://purl.org/pch/Disease
 :Disease rdf:type owl:Class ;
          rdfs:subClassOf :MedicalEntity ;
-         rdfs:isDefinedBy : .
+         rdfs:comment "This class represent a disease." ;
+         rdfs:isDefinedBy : ;
+         rdfs:label "Disease" .
 
 
 ###  https://purl.org/pch/DiseaseDiagnosisDocument
@@ -429,13 +434,17 @@ foaf:Person rdf:type owl:Class .
                                                           :ProcedureExecutionDocument
                                                         )
                                           ] ;
+                          rdfs:comment "This class represent a document of a disease diagnosis." ;
                           rdfs:isDefinedBy : ;
                           rdfs:label "Disease Diagnosis Document" .
 
 
 ###  https://purl.org/pch/Doctor
 :Doctor rdf:type owl:Class ;
-        rdfs:subClassOf foaf:Person .
+        rdfs:subClassOf foaf:Person ;
+        rdfs:comment "This class models a Doctor." ;
+        rdfs:isDefinedBy : ;
+        rdfs:label "Doctor" .
 
 
 ###  https://purl.org/pch/HealingDocument
@@ -454,6 +463,7 @@ foaf:Person rdf:type owl:Class .
                                                  :ProcedureExecutionDocument
                                                )
                                  ] ;
+                 rdfs:comment "This class represent a document of a disease healing." ;
                  rdfs:isDefinedBy : ;
                  rdfs:label "Healing Document" .
 
@@ -467,13 +477,17 @@ foaf:Person rdf:type owl:Class .
 ###  https://purl.org/pch/Medicinal
 :Medicinal rdf:type owl:Class ;
            rdfs:subClassOf :MedicalEntity ;
+           rdfs:comment "This class represent a medicinal prescription." ;
            rdfs:isDefinedBy : ;
            rdfs:label "Medicinal Prescription" .
 
 
 ###  https://purl.org/pch/Patient
 :Patient rdf:type owl:Class ;
-         rdfs:subClassOf foaf:Person .
+         rdfs:subClassOf foaf:Person ;
+         rdfs:comment "This class models a Patient." ;
+         rdfs:isDefinedBy : ;
+         rdfs:label "Patient" .
 
 
 ###  https://purl.org/pch/PrescriptionMedicinalDocument
@@ -492,6 +506,7 @@ foaf:Person rdf:type owl:Class .
                                                                :ProcedureExecutionDocument
                                                              )
                                                ] ;
+                               rdfs:comment "This class represent a document of a medicinal prescription." ;
                                rdfs:isDefinedBy : ;
                                rdfs:label "Prescription Medicinal Document" .
 
@@ -499,7 +514,9 @@ foaf:Person rdf:type owl:Class .
 ###  https://purl.org/pch/Procedure
 :Procedure rdf:type owl:Class ;
            rdfs:subClassOf :MedicalEntity ;
-           rdfs:isDefinedBy : .
+           rdfs:comment "This class represent a procedure." ;
+           rdfs:isDefinedBy : ;
+           rdfs:label "Procedure" .
 
 
 ###  https://purl.org/pch/ProcedureExecutionDocument
@@ -518,6 +535,7 @@ foaf:Person rdf:type owl:Class .
                                                             :ProcedureExecutionDocument
                                                           )
                                             ] ;
+                            rdfs:comment "This class represent a document of a procedure execution." ;
                             rdfs:isDefinedBy : ;
                             rdfs:label "Procedure Document" .
 
