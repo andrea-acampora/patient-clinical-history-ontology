@@ -1,4 +1,4 @@
-PREFIX pch: <https://purl.org/pch/\>
+PREFIX pch: <https://purl.org/pch/>
 
 SELECT ?clinicalDocument ?emissionDate
 WHERE {

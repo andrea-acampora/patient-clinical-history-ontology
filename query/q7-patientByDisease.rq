@@ -1,4 +1,4 @@
-PREFIX pch:<https://purl.org/pch/\>
+PREFIX pch:<https://purl.org/pch/>
 
 SELECT ?patient ?disease ?emissionDate ?doctorNotes
 WHERE {
@@ -6,7 +6,7 @@ WHERE {
   OPTIONAL {?diseaseDocument pch:hasDoctorNotes ?doctorNotes}
   ?diseaseDocument pch:has_disease ?disease .
   ?disease pch:refersToSnomedConcept ?snomedConcept . 
-  ?snomedConcept pch:hasSnomedCode "75570004" . 
+  ?snomedConcept a <http://snomed.info/id/237721006>.
   ?diseaseDocument pch:hasEmissionDate ?emissionDate .
   ?diseaseDocument pch:refersToPatient ?patient
 }

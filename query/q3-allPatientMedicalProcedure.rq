@@ -1,7 +1,7 @@
-PREFIX foaf: <http://xmlns.com/foaf/0.1/\>
-PREFIX pch: <https://purl.org/pch/\>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX pch: <https://purl.org/pch/>
 
-SELECT ?patient ?procedure ?procedureDate ?doctorNotes ?snomedLink 
+SELECT ?patient ?procedure ?procedureDate ?doctorNotes ?snomedConcept
 WHERE {   
 	?patient rdf:type pch:Patient .
 	?patient pch:taxCode "RSSMR90H294N".
@@ -9,9 +9,9 @@ WHERE {
  		pch:refersToPatient ?patient ;
 		pch:hasEmissionDate ?procedureDate ;   
 		pch:has_procedure ?procedure .   
-	?procedureDocument pch:hasDoctorNotes ?doctorNotes .   
-	?procedure pch:refersToSnomedConcept ?snomedConcept .   
-	?snomedConcept pch:hasSnomedBrowserLink ?snomedLink.
+	OPTIONAL{?procedureDocument pch:hasDoctorNotes ?doctorNotes}.
+        OPTIONAL{?procedure pch:refersToSnomedConcept ?snomedConcept}.
+
 }
 ORDER BY ?procedureDate
 

@@ -1,13 +1,13 @@
-PREFIX pch:<https://purl.org/pch/\>
+PREFIX pch:<https://purl.org/pch/>
 
-SELECT ?procedure ?patient ?procedureDate ?doctorNotes
+SELECT ?snomedConcept ?patient ?procedureDate ?doctorNotes
 WHERE {
   ?procedureDocument rdf:type pch:ProcedureExecutionDocument .
   OPTIONAL {?procedureDocument pch:hasDoctorNotes ?doctorNotes}
   ?procedureDocument pch:has_procedure ?procedure .
   ?procedure pch:refersToSnomedConcept ?snomedConcept . 
-  ?snomedConcept pch:hasSnomedCode "173171007" . 
-  ?procedureDocument pch:hasEmissionDate ?procedureDate .
+  ?snomedConcept a <http://snomed.info/id/265702005>.
+  ?procedureDocument pch:hasEmissionDate ?procedureDate.
   ?procedureDocument pch:refersToPatient ?patient
 }
 

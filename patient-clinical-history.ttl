@@ -78,12 +78,6 @@ foaf:surname rdf:type owl:AnnotationProperty .
 #    Object Properties
 #################################################################
 
-###  https://purl.org/pch#has_recovered_from_disease
-:has_recovered_from_disease rdf:type owl:ObjectProperty ;
-                            rdfs:domain :Patient ;
-                            rdfs:range :Disease .
-
-
 ###  https://purl.org/pch#is_linked_with
 :is_linked_with rdf:type owl:ObjectProperty ,
                          owl:SymmetricProperty ;
@@ -283,6 +277,13 @@ foaf:givenName rdf:type owl:DatatypeProperty ,
                         owl:FunctionalProperty ;
                rdfs:domain foaf:Person ;
                rdfs:range xsd:string .
+
+
+###  https://purl.org/pch#has_health_condition
+:has_health_condition rdf:type owl:DatatypeProperty ,
+                               owl:FunctionalProperty ;
+                      rdfs:domain :Patient ;
+                      rdfs:range xsd:string .
 
 
 ###  https://purl.org/pch/desease_note
@@ -774,67 +775,15 @@ foaf:Person rdf:type owl:Class .
 #    Rules
 #################################################################
 
-:patient rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
-
 :doc rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
-
-:disease rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
-
-:healingDoc rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
 
 :procedure rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
 
 :procedureConcept rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
 
-:diseaseConcept rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+:disease rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
 
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Patient_Disease_Recovered" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#classPredicate> :Patient ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :patient
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> :hasClinicalDocument ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :patient ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument2> :doc
-                                                                ] ;
-                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                             <http://www.w3.org/2003/11/swrl#propertyPredicate> :has_disease ;
-                                                                             <http://www.w3.org/2003/11/swrl#argument1> :doc ;
-                                                                             <http://www.w3.org/2003/11/swrl#argument2> :disease
-                                                                           ] ;
-                                                                 rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                                        <http://www.w3.org/2003/11/swrl#classPredicate> :HealingDocument ;
-                                                                                        <http://www.w3.org/2003/11/swrl#argument1> :healingDoc
-                                                                                      ] ;
-                                                                            rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> :refers_to_disease ;
-                                                                                                   <http://www.w3.org/2003/11/swrl#argument1> :healingDoc ;
-                                                                                                   <http://www.w3.org/2003/11/swrl#argument2> :disease
-                                                                                                 ] ;
-                                                                                       rdf:rest rdf:nil
-                                                                                     ]
-                                                                          ]
-                                                               ]
-                                                    ]
-                                         ] ;
-   <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> :has_recovered_from_disease ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :patient ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :disease
-                                                     ] ;
-                                           rdf:rest rdf:nil
-                                         ]
- ] .
+:diseaseConcept rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
 
 [ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
    rdfs:comment "" ;
